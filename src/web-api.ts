@@ -1,51 +1,32 @@
+import { inject } from 'aurelia-framework';
+import { HttpClient } from 'aurelia-fetch-client';
+
+
 let latency = 200;
 let id = 0;
 
-function getId(){
+function getId() {
   return ++id;
 }
 
 // let contacts = [
 //   {
-//     id:getId(),
-//     firstName:'John',
-//     lastName:'Tolkien',
-//     email:'tolkien@inklings.com',
-//     phoneNumber:'867-5309'
-//   },
-//   {
-//     id:getId(),
-//     firstName:'Clive',
-//     lastName:'Lewis',
-//     email:'lewis@inklings.com',
-//     phoneNumber:'867-5309'
-//   },
-//   {
-//     id:getId(),
-//     firstName:'Owen',
-//     lastName:'Barfield',
-//     email:'barfield@inklings.com',
-//     phoneNumber:'867-5309'
-//   },
-//   {
-//     id:getId(),
-//     firstName:'Charles',
-//     lastName:'Williams',
-//     email:'williams@inklings.com',
-//     phoneNumber:'867-5309'
-//   },
-//   {
-//     id:getId(),
-//     firstName:'Roger',
-//     lastName:'Green',
-//     email:'green@inklings.com',
-//     phoneNumber:'867-5309'
+//     id: getId(),
+//     firstName: 'Roger',
+//     lastName: 'Green',
+//     email: 'green@inklings.com',
+//     phoneNumber: '867-5309'
 //   }
 // ];
 
+@inject(HttpClient)
 export class WebAPI {
   isRequesting = false;
-  
+
+  constructor(private http: HttpClient) {
+    this.http = http;
+  }
+
   // getContactList(){
   //   this.isRequesting = true;
   //   return new Promise(resolve => {
@@ -62,35 +43,48 @@ export class WebAPI {
   //   });
   // }
 
-  // getContactDetails(id){
-  //   this.isRequesting = true;
-  //   return new Promise(resolve => {
-  //     setTimeout(() => {
-  //       let found = contacts.filter(x => x.id == id)[0];
-  //       resolve(JSON.parse(JSON.stringify(found)));
-  //       this.isRequesting = false;
-  //     }, latency);
-  //   });
-  // }
+  getContactList() {
+    this.isRequesting = true;
+    return new Promise(resolve => {
+      this.http.fetch('http://127.0.0.1/snbportal/test/api-users.php')
+        .then(response => response.json())
+        .then(contactsAsJsonData => {
+          resolve(contactsAsJsonData);
+        });
+    });
+  }
 
-  // saveContact(contact){
-  //   this.isRequesting = true;
-  //   return new Promise(resolve => {
-  //     setTimeout(() => {
-  //       let instance = JSON.parse(JSON.stringify(contact));
-  //       let found = contacts.filter(x => x.id == contact.id)[0];
+  getContactDetails(id) {
+    this.isRequesting = true;
+    return new Promise(resolve => {
+      setTimeout(() => {
+        let found = contacts.filter(x => x.id == id)[0];
+        if (found !== undefined) {
+          resolve(JSON.parse(JSON.stringify(found)));
+        }
+        this.isRequesting = false;
+      }, latency);
+    });
+  }
 
-  //       if(found){
-  //         let index = contacts.indexOf(found);
-  //         contacts[index] = instance;
-  //       }else{
-  //         instance.id = getId();
-  //         contacts.push(instance);
-  //       }
+  saveContact(contact) {
+    this.isRequesting = true;
+    return new Promise(resolve => {
+      setTimeout(() => {
+        let instance = JSON.parse(JSON.stringify(contact));
+        let found = contacts.filter(x => x.id == contact.id)[0];
 
-  //       this.isRequesting = false;
-  //       resolve(instance);
-  //     }, latency);
-  //   });
-  // }
+        if (found) {
+          let index = contacts.indexOf(found);
+          contacts[index] = instance;
+        } else {
+          instance.id = getId();
+          contacts.push(instance);
+        }
+
+        this.isRequesting = false;
+        resolve(instance);
+      }, latency);
+    });
+  }
 }

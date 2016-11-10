@@ -16,7 +16,16 @@ define('app',["require", "exports"], function (require, exports) {
     exports.App = App;
 });
 
-define('web-api',["require", "exports"], function (require, exports) {
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+define('web-api',["require", "exports", 'aurelia-framework', 'aurelia-fetch-client'], function (require, exports, aurelia_framework_1, aurelia_fetch_client_1) {
     "use strict";
     var latency = 200;
     var id = 0;
@@ -24,9 +33,59 @@ define('web-api',["require", "exports"], function (require, exports) {
         return ++id;
     }
     var WebAPI = (function () {
-        function WebAPI() {
+        function WebAPI(http) {
+            this.http = http;
             this.isRequesting = false;
+            this.http = http;
         }
+        WebAPI.prototype.getContactList = function () {
+            var _this = this;
+            this.isRequesting = true;
+            return new Promise(function (resolve) {
+                _this.http.fetch('http://127.0.0.1/snbportal/test/api-users.php')
+                    .then(function (response) { return response.json(); })
+                    .then(function (contactsAsJsonData) {
+                    resolve(contactsAsJsonData);
+                });
+            });
+        };
+        WebAPI.prototype.getContactDetails = function (id) {
+            var _this = this;
+            this.isRequesting = true;
+            return new Promise(function (resolve) {
+                setTimeout(function () {
+                    var found = contacts.filter(function (x) { return x.id == id; })[0];
+                    if (found !== undefined) {
+                        resolve(JSON.parse(JSON.stringify(found)));
+                    }
+                    _this.isRequesting = false;
+                }, latency);
+            });
+        };
+        WebAPI.prototype.saveContact = function (contact) {
+            var _this = this;
+            this.isRequesting = true;
+            return new Promise(function (resolve) {
+                setTimeout(function () {
+                    var instance = JSON.parse(JSON.stringify(contact));
+                    var found = contacts.filter(function (x) { return x.id == contact.id; })[0];
+                    if (found) {
+                        var index = contacts.indexOf(found);
+                        contacts[index] = instance;
+                    }
+                    else {
+                        instance.id = getId();
+                        contacts.push(instance);
+                    }
+                    _this.isRequesting = false;
+                    resolve(instance);
+                }, latency);
+            });
+        };
+        WebAPI = __decorate([
+            aurelia_framework_1.inject(aurelia_fetch_client_1.HttpClient), 
+            __metadata('design:paramtypes', [aurelia_fetch_client_1.HttpClient])
+        ], WebAPI);
         return WebAPI;
     }());
     exports.WebAPI = WebAPI;
@@ -129,12 +188,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-define('contact-list',["require", "exports", 'aurelia-event-aggregator', './messages', 'aurelia-framework', 'aurelia-fetch-client'], function (require, exports, aurelia_event_aggregator_1, messages_1, aurelia_framework_1, aurelia_fetch_client_1) {
+define('contact-list',["require", "exports", './web-api', 'aurelia-event-aggregator', './messages', 'aurelia-framework'], function (require, exports, web_api_1, aurelia_event_aggregator_1, messages_1, aurelia_framework_1) {
     "use strict";
     var ContactList = (function () {
-        function ContactList(http, ea) {
+        function ContactList(api, ea) {
             var _this = this;
-            this.http = http;
+            this.api = api;
             this.selectedId = 0;
             ea.subscribe(messages_1.ContactViewed, function (msg) { return _this.select(msg.contact); });
             ea.subscribe(messages_1.ContactUpdated, function (msg) {
@@ -142,23 +201,19 @@ define('contact-list',["require", "exports", 'aurelia-event-aggregator', './mess
                 var found = _this.contacts.find(function (x) { return x.user_ID == id; });
                 Object.assign(found, msg.contact);
             });
-            this.http = http;
+            this.api = api;
         }
         ContactList.prototype.created = function () {
             var _this = this;
-            this.http.fetch('http://127.0.0.1/snbportal/test/api-users.php')
-                .then(function (response) { return response.json(); })
-                .then(function (data) {
-                _this.contacts = data;
-            });
+            this.api.getContactList().then(function (contacts) { return _this.contacts = contacts; });
         };
         ContactList.prototype.select = function (contact) {
             this.selectedId = contact.user_ID;
             return true;
         };
         ContactList = __decorate([
-            aurelia_framework_1.inject(aurelia_fetch_client_1.HttpClient, aurelia_event_aggregator_1.EventAggregator), 
-            __metadata('design:paramtypes', [aurelia_fetch_client_1.HttpClient, aurelia_event_aggregator_1.EventAggregator])
+            aurelia_framework_1.inject(web_api_1.WebAPI, aurelia_event_aggregator_1.EventAggregator), 
+            __metadata('design:paramtypes', [web_api_1.WebAPI, aurelia_event_aggregator_1.EventAggregator])
         ], ContactList);
         return ContactList;
     }());
