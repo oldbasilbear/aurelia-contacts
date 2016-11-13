@@ -1,6 +1,5 @@
 import { inject } from 'aurelia-framework';
-import { HttpClient } from 'aurelia-fetch-client';
-
+import { HttpClient, json } from 'aurelia-fetch-client';
 
 let latency = 200;
 let id = 0;
@@ -9,16 +8,6 @@ function getId() {
   return ++id;
 }
 
-// let contacts = [
-//   {
-//     id: getId(),
-//     firstName: 'Roger',
-//     lastName: 'Green',
-//     email: 'green@inklings.com',
-//     phoneNumber: '867-5309'
-//   }
-// ];
-
 @inject(HttpClient)
 export class WebAPI {
   isRequesting = false;
@@ -26,22 +15,6 @@ export class WebAPI {
   constructor(private http: HttpClient) {
     this.http = http;
   }
-
-  // getContactList(){
-  //   this.isRequesting = true;
-  //   return new Promise(resolve => {
-  //     setTimeout(() => {
-  //       let results = contacts.map(x =>  { return {
-  //         id:x.id,
-  //         firstName:x.firstName,
-  //         lastName:x.lastName,
-  //         email:x.email
-  //       }});
-  //       resolve(results);
-  //       this.isRequesting = false;
-  //     }, latency);
-  //   });
-  // }
 
   getContactList() {
     this.isRequesting = true;
@@ -56,35 +29,45 @@ export class WebAPI {
 
   getContactDetails(id) {
     this.isRequesting = true;
+
     return new Promise(resolve => {
-      setTimeout(() => {
-        let found = contacts.filter(x => x.id == id)[0];
-        if (found !== undefined) {
-          resolve(JSON.parse(JSON.stringify(found)));
+      let formdata = {
+        'user_ID': id
+      }
+
+      this.http.fetch('http://127.0.0.1/snbportal/test/api-users.php',
+        {
+          method: 'post',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+          body: json(formdata)
         }
-        this.isRequesting = false;
-      }, latency);
+      )
+        .then(response => response.json())
+        .then(userAsJsonData => {
+          resolve(JSON.parse(JSON.stringify(userAsJsonData)));
+        });
+
+      this.isRequesting = false;
     });
   }
 
-  saveContact(contact) {
-    this.isRequesting = true;
-    return new Promise(resolve => {
-      setTimeout(() => {
-        let instance = JSON.parse(JSON.stringify(contact));
-        let found = contacts.filter(x => x.id == contact.id)[0];
+  // saveContact(contact) {
+  //   this.isRequesting = true;
+  //   return new Promise(resolve => {
+  //     setTimeout(() => {
+  //       let instance = JSON.parse(JSON.stringify(contact));
+  //       let found = contacts.filter(x => x.id == contact.id)[0];
 
-        if (found) {
-          let index = contacts.indexOf(found);
-          contacts[index] = instance;
-        } else {
-          instance.id = getId();
-          contacts.push(instance);
-        }
+  //       if (found) {
+  //         let index = contacts.indexOf(found);
+  //         contacts[index] = instance;
+  //       } else {
+  //         contacts.push(instance);
+  //       }
 
-        this.isRequesting = false;
-        resolve(instance);
-      }, latency);
-    });
-  }
+  //       this.isRequesting = false;
+  //       resolve(instance);
+  //     }, latency);
+  //   });
+  // }
 }

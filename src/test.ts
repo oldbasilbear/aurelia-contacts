@@ -32,13 +32,15 @@ export class ContactDetail {
     return this.contact.firstName && this.contact.lastName && !this.api.isRequesting;
   }
 
-  save() {
-    this.api.saveContact(this.contact).then(contact => {
-      this.contact = <Contact>contact;
-      this.routeConfig.navModel.setTitle(this.contact.firstName);
-      this.originalContact = JSON.parse(JSON.stringify(this.contact));
-    });
-  }
+  /**
+   * todo: add back the save */
+  // save() {
+  //   this.api.saveContact(this.contact).then(contact => {
+  //     this.contact = <Contact>contact;
+  //     this.routeConfig.navModel.setTitle(this.contact.firstName);
+  //     this.originalContact = JSON.parse(JSON.stringify(this.contact));
+  //   });
+  // }
 
   canDeactivate() {
     if (!areEqual(this.originalContact, this.contact)) {
