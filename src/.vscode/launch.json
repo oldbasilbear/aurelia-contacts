@@ -5,18 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch localhost with sourcemaps",
+            "name": "Chrome debug",
             "type": "chrome",
             "request": "launch",
             "url": "http://localhost:9000/index.html",
-            "webRoot": "/home/victor/aurelia/aurelia-contacts",
+            "webRoot": "/home/victor/aurelia/aurelia-contacts/bin",
             "sourceMaps": true
-        },
-        {
-            "name": "Launch index.html (without sourcemaps)",
-            "type": "chrome",
-            "request": "launch",
-            "file": "${workspaceRoot}/index.html"
         },
         {
             "type": "node",

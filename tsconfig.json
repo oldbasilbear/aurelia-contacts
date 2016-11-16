@@ -1,5 +1,5 @@
 {
-  "compileOnSave": false,
+  "compileOnSave": true,
   "compilerOptions": {
     "sourceMap": true,
     "target": "es5",
@@ -10,6 +10,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
+    "outDir": "/home/victor/aurelia/contact-manager/bin",
     "lib": ["es2015", "dom"]
   },
   "exclude": [

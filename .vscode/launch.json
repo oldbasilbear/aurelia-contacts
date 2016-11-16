@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Chrome debug",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:9000/index.html",
+            "webRoot": "/home/victor/aurelia/contact-manager",
+            "sourceMaps": true
+        }
+    ]
+}

@@ -1,4 +1,4 @@
-define('app',["require", "exports"], function (require, exports) {
+define('../bin/app',["require", "exports"], function (require, exports) {
     "use strict";
     var App = (function () {
         function App() {
@@ -25,7 +25,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-define('web-api',["require", "exports", 'aurelia-framework', 'aurelia-fetch-client'], function (require, exports, aurelia_framework_1, aurelia_fetch_client_1) {
+define('../bin/web-api',["require", "exports", "aurelia-framework", "aurelia-fetch-client"], function (require, exports, aurelia_framework_1, aurelia_fetch_client_1) {
     "use strict";
     var latency = 200;
     var id = 0;
@@ -68,16 +68,16 @@ define('web-api',["require", "exports", 'aurelia-framework', 'aurelia-fetch-clie
                 _this.isRequesting = false;
             });
         };
-        WebAPI = __decorate([
-            aurelia_framework_1.inject(aurelia_fetch_client_1.HttpClient), 
-            __metadata('design:paramtypes', [aurelia_fetch_client_1.HttpClient])
-        ], WebAPI);
         return WebAPI;
     }());
+    WebAPI = __decorate([
+        aurelia_framework_1.inject(aurelia_fetch_client_1.HttpClient),
+        __metadata("design:paramtypes", [aurelia_fetch_client_1.HttpClient])
+    ], WebAPI);
     exports.WebAPI = WebAPI;
 });
 
-define('messages',["require", "exports"], function (require, exports) {
+define('../bin/messages',["require", "exports"], function (require, exports) {
     "use strict";
     var ContactUpdated = (function () {
         function ContactUpdated(contact) {
@@ -95,7 +95,7 @@ define('messages',["require", "exports"], function (require, exports) {
     exports.ContactViewed = ContactViewed;
 });
 
-define('utility',["require", "exports"], function (require, exports) {
+define('../bin/utility',["require", "exports"], function (require, exports) {
     "use strict";
     function areEqual(obj1, obj2) {
         return Object.keys(obj1).every(function (key) { return obj2.hasOwnProperty(key) && (obj1[key] === obj2[key]); });
@@ -113,7 +113,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-define('contact-detail',["require", "exports", 'aurelia-framework', 'aurelia-event-aggregator', './web-api', './messages', './utility'], function (require, exports, aurelia_framework_1, aurelia_event_aggregator_1, web_api_1, messages_1, utility_1) {
+define('../bin/contact-detail',["require", "exports", "aurelia-framework", "aurelia-event-aggregator", "./web-api", "./messages", "./utility"], function (require, exports, aurelia_framework_1, aurelia_event_aggregator_1, web_api_1, messages_1, utility_1) {
     "use strict";
     var ContactDetail = (function () {
         function ContactDetail(api, ea) {
@@ -151,12 +151,12 @@ define('contact-detail',["require", "exports", 'aurelia-framework', 'aurelia-eve
             }
             return true;
         };
-        ContactDetail = __decorate([
-            aurelia_framework_1.inject(web_api_1.WebAPI, aurelia_event_aggregator_1.EventAggregator), 
-            __metadata('design:paramtypes', [web_api_1.WebAPI, aurelia_event_aggregator_1.EventAggregator])
-        ], ContactDetail);
         return ContactDetail;
     }());
+    ContactDetail = __decorate([
+        aurelia_framework_1.inject(web_api_1.WebAPI, aurelia_event_aggregator_1.EventAggregator),
+        __metadata("design:paramtypes", [web_api_1.WebAPI, aurelia_event_aggregator_1.EventAggregator])
+    ], ContactDetail);
     exports.ContactDetail = ContactDetail;
 });
 
@@ -169,7 +169,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-define('contact-list',["require", "exports", './web-api', 'aurelia-event-aggregator', './messages', 'aurelia-framework'], function (require, exports, web_api_1, aurelia_event_aggregator_1, messages_1, aurelia_framework_1) {
+define('../bin/contact-list',["require", "exports", "./web-api", "aurelia-event-aggregator", "./messages", "aurelia-framework"], function (require, exports, web_api_1, aurelia_event_aggregator_1, messages_1, aurelia_framework_1) {
     "use strict";
     var ContactList = (function () {
         function ContactList(api, ea) {
@@ -193,16 +193,16 @@ define('contact-list',["require", "exports", './web-api', 'aurelia-event-aggrega
             this.selectedId = contact.user_ID;
             return true;
         };
-        ContactList = __decorate([
-            aurelia_framework_1.inject(web_api_1.WebAPI, aurelia_event_aggregator_1.EventAggregator), 
-            __metadata('design:paramtypes', [web_api_1.WebAPI, aurelia_event_aggregator_1.EventAggregator])
-        ], ContactList);
         return ContactList;
     }());
+    ContactList = __decorate([
+        aurelia_framework_1.inject(web_api_1.WebAPI, aurelia_event_aggregator_1.EventAggregator),
+        __metadata("design:paramtypes", [web_api_1.WebAPI, aurelia_event_aggregator_1.EventAggregator])
+    ], ContactList);
     exports.ContactList = ContactList;
 });
 
-define('environment',["require", "exports"], function (require, exports) {
+define('../bin/environment',["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = {
@@ -211,7 +211,7 @@ define('environment',["require", "exports"], function (require, exports) {
     };
 });
 
-define('main',["require", "exports", './environment'], function (require, exports, environment_1) {
+define('../bin/main',["require", "exports", "./environment"], function (require, exports, environment_1) {
     "use strict";
     Promise.config({
         warnings: {
@@ -233,7 +233,7 @@ define('main',["require", "exports", './environment'], function (require, export
     exports.configure = configure;
 });
 
-define('no-selection',["require", "exports"], function (require, exports) {
+define('../bin/no-selection',["require", "exports"], function (require, exports) {
     "use strict";
     var NoSelection = (function () {
         function NoSelection() {
@@ -253,7 +253,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-define('test',["require", "exports", 'aurelia-framework', './web-api', './utility'], function (require, exports, aurelia_framework_1, web_api_1, utility_1) {
+define('../bin/test',["require", "exports", "aurelia-framework", "./web-api", "./utility"], function (require, exports, aurelia_framework_1, web_api_1, utility_1) {
     "use strict";
     var ContactDetail = (function () {
         function ContactDetail(api) {
@@ -281,16 +281,16 @@ define('test',["require", "exports", 'aurelia-framework', './web-api', './utilit
             }
             return true;
         };
-        ContactDetail = __decorate([
-            aurelia_framework_1.inject(web_api_1.WebAPI), 
-            __metadata('design:paramtypes', [web_api_1.WebAPI])
-        ], ContactDetail);
         return ContactDetail;
     }());
+    ContactDetail = __decorate([
+        aurelia_framework_1.inject(web_api_1.WebAPI),
+        __metadata("design:paramtypes", [web_api_1.WebAPI])
+    ], ContactDetail);
     exports.ContactDetail = ContactDetail;
 });
 
-define('resources/index',["require", "exports"], function (require, exports) {
+define('../bin/resources/index',["require", "exports"], function (require, exports) {
     "use strict";
     function configure(config) {
     }
